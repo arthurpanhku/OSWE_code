@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>SOAPBX</title>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="../../css/main.css" />
+</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header" th:replace="fragments/header :: header"></header>
+
+			<!-- Menu -->
+			<section id="menu" th:replace="fragments/menu :: menu"></section>
+
+			<!-- Main -->
+			<div id="main">
+				<article class="post">
+					<header>
+						<div class="title">
+							<h2>Join Soapbx</h2>
+							<p>It's easy and it's free! Create your account today.</p>
+						</div>
+					</header>
+					<div>
+						<div th:if="${message != null}">
+							<p th:text="${message}"></p>
+						</div>
+						<form action="/signup" method="post">
+							<label for="email">Email:</label>
+							<input type="text" id="email" name="email" /><br/><br/>
+							<label for="username">Username:</label>
+							<input type="text" id="username" name="username" /><br/><br/>
+							<label for="password">Password:</label>
+							<input type="password" id="password" name="password" /><br/><br/>
+							<input type="submit" value="Submit" name="submit" />
+						</form>
+					</div>
+				</article>
+			
+				<!-- Footer -->
+				<section id="footer" th:replace="fragments/footer :: footer"></section>
+				
+			</div>
+
+		</div>
+
+		<!-- Scripts -->
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../../js/browser.min.js"></script>
+		<script src="../../js/breakpoints.min.js"></script>
+		<script src="../../js/util.js"></script>
+		<script src="../../js/main.js"></script>
+	
+	</body>
+</html>

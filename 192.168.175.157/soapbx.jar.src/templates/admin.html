@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>SOAPBX</title>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="../../css/main.css" />
+</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+				<header id="header" th:replace="fragments/header :: header"></header>
+
+				<!-- Menu -->
+				<section id="menu" th:replace="fragments/menu :: menu"></section>
+				
+				<!-- Main -->
+				<div id="main" >
+					<article class="post">
+						<header>
+							<div class="title">
+								<h2>At a Glance</h2>
+							</div>
+						</header>
+						<div th:if="${message != null}" th:text="${message}"></div>
+						<th:block th:if="${local}"><h3><code th:utext="${local}"></code>- local.txt</h3></th:block>
+						<ul class="stats">
+							<li><div th:text="@{|Users: ${userCount}|}">0</div></li>
+							<li><div th:text="@{|Stories posted: ${storyCount}|}">0</div></li>
+							<li><div th:text="@{|Comments posted: ${commentCount}|}">0</div></li>
+						</ul>
+						
+						<footer>
+							<ul class="actions">
+								<li><a href="/admin/users" class="button">User Management</a></li>
+								<li><a href="/admin/backupdb" class="button">Backup Database</a></li>
+							</ul>					
+						</footer>
+						
+					</article>
+					<article class="post">
+						<header>
+							<div class="title">
+								<h3>Search User Activity</h3>
+							</div>
+							
+						</header>
+							<label for="category">Select a category:</label> 
+							<select id="category" name="category" onchange="analytics();">
+								<option th:each="cat: ${categories}" th:value="${cat.id}" th:text="${cat.name}">
+							</select><br />
+							<ul class="actions">
+								<li><a href="/admin/users/category?id=1" class="button" id="usercat">User Posts In Category</a></li>
+								<li><a href="/admin/stories/category?id=1" class="button" id="storycat">Stories In Category</a></li>
+							</ul>
+												
+						<footer>	
+							
+						</footer>
+						
+					</article>
+					<!-- Footer -->
+					<section id="footer" th:replace="fragments/footer :: footer"></section>
+				</div>
+
+			</div>
+		<script>
+			function analytics() {
+				var catid = document.getElementById("category").value;
+				document.getElementById("usercat").href = "/admin/users/category?id="+ catid;
+				document.getElementById("storycat").href = "/admin/stories/category?id="+ catid;
+				
+			}
+		</script>
+		<!-- Scripts -->
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../../js/browser.min.js"></script>
+		<script src="../../js/breakpoints.min.js"></script>
+		<script src="../../js/util.js"></script>
+		<script src="../../js/main.js"></script>
+	</body>
+</html>

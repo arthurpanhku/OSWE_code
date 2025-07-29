@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block content %}
+<!-- Banner -->
+<section id="banner">
+		<div class="content">
+			<header>
+				<h1 >Customers</h1>
+			</header>
+			<div class="row gtr-50 gtr-uniform">
+				{% if customers is empty %}
+					<p>You have no customers. Please create an invoice first. </p>
+				{% endif %}
+				{% for customer in customers %}
+				<div class="col-4 col-6-large col-12-medium">
+					<div class="box">
+						<ul class="contact">
+							<li class="icon solid fa-user">{{ customer.name }}</li>
+							<li class="icon solid fa-envelope">{{ customer.email }}</li>
+							<li class="icon solid fa-home">{{ customer.address }}<br>
+								{{ customer.city }}, {{ customer.state }} {{ customer.zip }}</li>
+						</ul>
+						<div class="row">
+							<div class="col-6">
+								<ul class="actions">
+									<li><a href="/customer/{{ customer.id }}/edit" class="button primary">Edit</a></li>
+								</ul>
+							</div>
+							<div class="col-6">
+								<ul class="actions">
+									<li><a href="/customer/{{ customer.id }}/delete" class="button">Delete</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+
+		</div>
+	</section>
+{% endblock %}

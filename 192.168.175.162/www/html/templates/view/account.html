@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+{% block content %}
+<!-- Banner -->
+<section id="banner">
+		<div class="content">
+			<header>
+				<h1>Account</h1>
+				{% if user.avatar %}
+					{{ "#{data}#{user.avatar}"|raw }}
+				{% else %}
+					<p>No Avatar</p>
+				{% endif %}
+				<ul class="actions">
+					<li>
+						<label for="file-upload" class="button primary small" >
+						Select image
+						</label>
+						<input id="file-upload" type="file" style="display: none;"/>
+					</li>
+					<li><input type="button" value="Upload" class="secondary small" id="upload-button" /></li>
+				</ul>
+				<form method="post" action="/account">
+					<div class="row gtr-uniform">
+						<div class="col-6 col-12-xsmall">
+							<input type="text" name="name" id="name" value="{{user.name}}" placeholder="Name" />
+						</div>
+						<div class="col-6 col-12-xsmall">
+							<input type="email" name="email" id="email" value="{{user.email}}" placeholder="Email" />
+						</div>
+						<div class="col-6 col-12-xsmall">
+							<input type="password" name="password" id="password" value="" placeholder="Password" />
+						</div>
+						<div class="col-6 col-12-xsmall">
+							<input type="password" name="password-repeat" id="password-repeat" value="" placeholder="Repeat Password" />
+						</div>
+						<!-- Break -->
+						<div class="col-12">
+							<textarea name="bio" id="bio" placeholder="Enter your bio" rows="6">{{user.bio}}</textarea>
+						</div>
+						<!-- Break -->
+						<div class="col-12">
+							<ul class="actions">
+								<li><input type="submit" value="Submit" class="primary" /></li>
+							</ul>
+						</div>
+					</div>
+				</form>
+			</header>
+		</div>
+	</section>
+{% endblock %}
+
+{% block custom_scripts %}
+<script>
+	var btn = document.getElementById("upload-button");
+	btn.addEventListener("click", upload);
+	async function upload(){
+
+		if(document.getElementById("file-upload").files[0]){
+			const xhr = new XMLHttpRequest();
+
+			var formData = new FormData();
+			avatar = await toBase64(document.getElementById("file-upload").files[0])
+			var blob = new Blob([avatar]);
+			formData.append("avatar", blob, "avatar");
+			xhr.open('POST', '/upload-avatar');			
+			xhr.send(formData);
+			
+			xhr.onload = () => {
+				if (xhr.status === 200){
+					alert("Avatar has been upload, please reload the page.");
+				}else{
+					alert("An error occured, please try again");
+				}
+			}
+		}else{
+			alert("No avatar has been selected")
+		}
+	}
+
+	const toBase64 = file => new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload = () => resolve(reader.result);
+		reader.onerror = error => reject(error);
+	});
+
+</script>
+{% endblock %}

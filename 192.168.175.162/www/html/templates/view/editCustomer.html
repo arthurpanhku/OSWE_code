@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+{% block content %}
+<!-- Banner -->
+<section id="banner">
+		<div class="content">
+			<header>
+				<h1 >Customer</h1>
+			</header>
+		<div class="table-wrapper" id="app" data-customer=' {{ customer }}' >
+			<form method="post" action="#" @submit.prevent="submitForm">
+				<div class="row gtr-uniform">
+					<div class="col-12 col-12-xsmall">
+						<div >
+							<input type="text" class="invoice_items" v-model="customer.name" value="" placeholder="Customer Name" required>
+							<input type="text" class="invoice_items" v-model="customer.address" value="" placeholder="Customer Address" required>
+							<input type="text" class="invoice_items" v-model="customer.city"  value="" placeholder="Customer City" required>
+							<input type="text" class="invoice_items" v-model="customer.state"  value="" placeholder="Customer State" required>
+							<input type="text" class="invoice_items" v-model="customer.zip" value="" placeholder="Customer Zip" required>
+							<input type="email" class="invoice_items" v-model="customer.email" value="" placeholder="Customer Email" required>
+						</div>
+					</div>
+					<div class="col-12">
+						<ul class="actions">
+							<li><input type="submit" value="Submit" class="primary"></li>
+						</ul>
+					</div>
+				</div>
+			</form>
+		</div>
+	</section>
+{% endblock %}
+{% block custom_scripts %}
+<script>
+var app = new Vue({
+	el: '#app',
+	data: {
+	  customer: {},
+	},
+	delimiters: ['${', '}'],
+	mounted: function () {
+		this.customer = JSON.parse(this.$el.dataset.customer);
+	  },
+	computed: {
+	},
+	methods: {
+		submitForm: function() {
+			this.customer = this.customer;
+			console.info('Vue.js items object:', this.invoice);
+			$.ajax({
+				type: "POST",
+				url: "",
+				data: JSON.stringify(this.customer),
+				contentType: "application/json; charset=utf-8",
+				success: function(){window.location= '/customers'},
+				error: function(errMsg) {
+					var msg = "";
+					for (var error in errMsg.responseJSON) {
+						// skip loop if the property is from prototype
+						if (!errMsg.responseJSON.hasOwnProperty(error)) continue;
+					
+						var errors = errMsg.responseJSON[error];
+						for (var e in errors) {
+							if(!errors.hasOwnProperty(e)) continue;
+							msg += errors[e] + "\n"
+						}
+					}
+					alert(msg)
+				}
+			});
+		}
+	}
+  })
+
+</script>
+{% endblock %}

@@ -1,0 +1,151 @@
+<!-- Sidebar -->
+<div id="sidebar">
+	<div class="inner">
+
+		<!-- Search -->
+			<section id="login" class="alt" >
+				{% if alert is defined %}
+					{% for alert_type in alert %}
+						<div class="box alert-{{alert_color}} alert"> <i class="fas {{ alert_icon }}"></i> 
+							{% for alert_text in alert_type %}
+								{{ alert_text }}
+							{% endfor %}
+						</div>
+					{% endfor %}
+				{% endif %}
+				{% if user.name is defined %}
+					<div class="row gtr-uniform" id="sb">
+						<div class="col-7 col-12-xsmall break-word">
+							<h3>Hello {{ user.name }}!</h3>
+						</div>
+						<div class="col-3 col-12-xsmall">
+							<a href="/logout" class="button">Logout</a>
+						</div>
+					</div>
+					{% else %}
+						{% if reset is defined %}
+							<div id="sb">
+								<form method="post" action="">
+									<div class="row gtr-uniform">
+										<div class="col-12 col-12-xsmall">
+											<input type="password" name="password" id="password" placeholder="New Password" />
+										</div>
+										<div class="col-12">
+											<ul class="actions">
+												<li><input type="submit" value="Reset Password" class="primary" /></li>
+											</ul>
+										</div>
+									</div>
+								</form>
+							</div>
+						{% else %}
+							<div id="sb">
+								<div v-if="isLogin" v-if="!isForgot">
+									<form method="post" action="/login">
+										<div class="row gtr-uniform">
+											<div class="col-12 col-12-xsmall">
+												<input type="email" name="email" id="email" value="" placeholder="Email" />
+											</div>
+											<div class="col-12 col-12-xsmall">
+													<input type="password" name="password" id="password" placeholder="Password" />
+												</div>
+											<div class="col-12">
+												<ul class="actions">
+													<li><input type="submit" id="submit_login" value="submit" class="primary" /></li>
+													<li><input type="reset" v-on:click="isForgot = true; isLogin = false" value="Forgot Password?" /></li>
+												</ul>
+											</div>
+										</div>
+									</form>
+									<a href="#" v-on:click="isRegister = true; isLogin = false">Need an account?</a>
+								</div>
+								
+								<div v-if="isRegister">
+									<form method="post" action="/register">
+										<div class="row gtr-uniform">
+											<div class="col-12 col-12-xsmall">
+												<input type="text" name="name" id="email" value="" placeholder="Name" />
+											</div>
+											<div class="col-12 col-12-xsmall">
+												<input type="email" name="email" id="email" value="" placeholder="Email" />
+											</div>
+											<div class="col-12 col-12-xsmall">
+													<input type="password" name="password" id="password" placeholder="Password" />
+											</div>
+											<div class="col-12">
+												<ul class="actions">
+													<li><input type="submit" value="Register" class="primary" /></li>
+												</ul>
+											</div>
+										</div>
+									</form>
+									<a href="#" v-on:click="isRegister = false; isLogin = true">Already have an account?</a>
+								</div>
+								<div v-if="isForgot">
+									<form method="post" action="/forgot">
+										<div class="row gtr-uniform">
+											<div class="col-12 col-12-xsmall">
+												<input type="email" name="email" id="email" value="" placeholder="Email" />
+											</div>
+											<div class="col-12">
+												<ul class="actions">
+													<li><input type="submit" value="Send Reset" class="primary" /></li>
+												</ul>
+											</div>
+										</div>
+									</form>
+									<a href="#" v-on:click="isLogin= true; isForgot= false">Remembered it?</a>
+								</div>
+							</div>
+					{% endif %}
+				{% endif %}
+			</section>
+
+		<!-- Menu -->
+			<nav id="menu">
+				{% if LocalToken is defined %}
+					<div class="box alert-success alert">{{ LocalToken }}</div>
+				{% endif %}
+				<header class="major">
+					<h2>Menu</h2>
+				</header>
+				<ul>
+					<li><a href="/">Homepage</a></li>
+					{% if user.name is defined %}
+					<li><a href="/invoices">Invoices</a></li>
+					{% endif %}
+					{% if user.name is defined %}
+					<li><a href="/customers">Customers</a></li>
+					{% endif %}
+					{% if user.name is defined %}
+					<li><a href="/account">Account</a></li>
+					{% endif %}
+					{% if user is defined and user.isAdmin == 0 %}
+					<li><a href="/admin">Admin</a></li>
+					{% endif %}
+				</ul>
+			</nav>
+
+		<!-- Section -->
+			<section>
+				<header class="major">
+					<h2>Get in touch</h2>
+				</header>
+				<p>Need help? Contact us! Our support team is available for help</p>
+				<ul class="contact">
+					<li class="icon solid fa-envelope"><a href="#">information@Akount.tld</a></li>
+					<li class="icon solid fa-phone">1(800) 555-7854</li>
+					<li class="icon solid fa-home">1799  Michigan Avenue<br />
+						New Castle, PA 16101</li>
+				</ul>
+			</section>
+
+		<!-- Footer -->
+			<footer id="footer">
+				<p class="copyright">Copyright &copy; {{ "now"|date("Y") }} Offensive Security</br> 
+					Design: <a href="https://html5up.net">HTML5 UP</a> under <a href="https://html5up.net/license">CC3.0</a>.</p>
+			</footer>
+
+	</div>
+</div>
+

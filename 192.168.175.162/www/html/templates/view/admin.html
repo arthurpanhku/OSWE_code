@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block content %}
+<!-- Banner -->
+<section id="banner">
+		<div class="content">
+			<header>
+				<h1 >Admin</h1>
+			</header>
+			<div class="table-wrapper">
+				<table class="alt">
+					<thead>
+						<tr>
+							<th></th>
+							<th>Name</th>
+							<th>Email</th>
+							<th>Admin</th>
+							<th>Total</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for user in users %}
+							<tr>
+								<td style="width: 70px;text-align: center;">
+								{% if user.avatar %}
+									{{ "#{data}#{user.avatar}"|raw }}
+								{% else %}
+									<p>No Avatar</p>
+								{% endif %}
+								</td>
+								<td>{{ user.name }}</td>
+								<td>{{ user.email }}</td>
+								<td>{% if user.isAdmin == 0 %}Yes{% else %}No{% endif %}</td>
+								<td>${{ user.total | number_format(2, '.', ',') }}</td>
+								<td style="width: 80px;text-align: center;"><a href="/admin/delete/{{user.id}}" class="icon solid fa-trash"></a></td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section>
+{% endblock %}

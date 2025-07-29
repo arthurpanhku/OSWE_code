@@ -1,0 +1,276 @@
+{% extends "layout.html" %}
+{% block content %}
+<!-- Banner -->
+<section id="banner">
+		<div class="content">
+			<header>
+				<h1 >Invoice</h1>
+			</header>
+			<div class="table-wrapper" id="app" data-items='{{ items }}' data-customer=' {{ customer }}' data-invoice='{{ invoice }}' >
+					<form method="post" action="#" @submit.prevent="submitForm">
+							<div class="row gtr-uniform">
+								<div class="col-4 col-12-xsmall">
+									<div >
+										<select class="invoice_items" v-model="customer">
+											<option v-bind:value="{}" selected="selected" >- Create New Customer -</option>
+											{% for c in customers %}
+											<option value="{{c.id}}" v-bind:value=' {{ c|json_encode() }}'>{{c.name}}</option>
+											{% endfor %}
+										</select>
+										<input type="text" class="invoice_items" v-model="customer.name" value="" placeholder="Customer Name" required>
+										<input type="text" class="invoice_items" v-model="customer.address" value="" placeholder="Customer Address" required>
+										<input type="text" class="invoice_items" v-model="customer.city"  value="" placeholder="Customer City" required>
+										<input type="text" class="invoice_items" v-model="customer.state"  value="" placeholder="Customer State" required>
+										<input type="text" class="invoice_items" v-model="customer.zip" value="" placeholder="Customer Zip" required>
+										<input type="email" class="invoice_items" v-model="customer.email" value="" placeholder="Customer Email" required>
+										<input type="hidden" class="invoice_items" v-model="customer.id" value="" placeholder="Customer ID" required>
+									</div>
+								</div>
+								<div class="col-4 col-12-xsmall">
+										<textarea v-model="invoice.description" placeholder="Enter invoice description" rows="2" required></textarea>
+										<br>
+										<input type="checkbox" :checked="invoice.paid"  v-model="invoice.paid" id="paid" name="paid">
+										<label for="paid" v-model="invoice.paid">Invoice Paid?</label>
+										<br>
+										Proof of Payment
+										<ul class="actions">
+											<li>
+												<label for="file-upload" class="button primary small" >
+												${ fileUploadText }
+												</label>
+												<input v-on:change="onFileChange" id="file-upload" type="file" style="display: none;"/>
+											</li>
+											<li><a style="border-bottom: none;" v-bind:href="'/invoice/'+ invoice.id + '/file'"  target="_blank"><input v-if="invoice.proof" type="button" value="View File" class="secondary small" id="upload-button" /></a></li>
+										</ul>
+
+								</div>
+								<div class="col-4 col-12-xsmall">
+									Date of Issue
+									<input type="date" class="invoice_items" value="" placeholder="Date of Issue" v-model="invoice.createdDate" required>
+									Due Date
+									<input type="date" class="invoice_items" value="" v-model="invoice.dueDate"  placeholder="Date Due" required>
+									Tax
+									<input type="number" class="invoice_items" v-model="invoice.tax" name="tax" min=".00" max=".99" step=".01" required/>
+								</div>
+								<!-- Break -->
+								<div class="col-5"><h4>Item</h4></div>
+								<div class="col-2"><h4>Quanity</h4></div>
+								<div class="col-2"><h4>Price</h4></div>
+								<div class="col-2"><h4>Total</h4></div>
+								<div class="col-1 add">
+									<ul class="icons">
+											<li><a v-on:click="addNewItem" class="icon far fa-plus-square fa-2x "><span class="label">Add Item</span></a></li>
+									</ul>
+								</div>
+								<!-- Break -->
+								<div class="col-12 row line-items" v-for="(item, index) in items" >
+									<div class="col-5"> 
+										<input type="text" class="invoice_items" v-model="item.description" value="" required>
+									</div>
+									<div class="col-2">
+										<input type="number" class="invoice_items" v-model="item.quantity" min="1" step="1" required/>
+									</div>
+									<div class="col-2">
+										<input type="number" class="invoice_items" v-model="item.price" min="0.01" step="0.01" required />
+									</div>
+									<div class="col-2">
+										<input type="number" class="invoice_items" v-model="itemsTotal[index].total" min="0.01" step="0.01" disabled/>
+									</div>
+									<p hidden>  </p>
+									<div class="col-1">
+										<ul class="icons remove">
+												<li><a v-on:click="removeItem(index)" class="icon far fa-minus-square fa-2x "><span class="label">Remove Item</span></a></li>
+										</ul>
+									</div>
+								</div>
+								<div class="col-12 row line-items">
+									<div class="col-7"></div>
+									<div class="col-4">
+											<div class="table-wrapper">
+													<table>
+														<tbody>
+															<tr>
+																<td>SubTotal:</td>
+																<td>${ invoiceSubTotal | toCurrency}</td>
+															</tr>
+															<tr>
+																<td>Tax:</td>
+																<td>${ invoiceTax | toCurrency}</td>
+															</tr>
+															<tr>
+																<td>Total:</td>
+																<td>${ invoiceTotal | toCurrency}</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+									</div>
+								</div>
+								<!-- Break -->
+								<div class="col-12">
+									<ul class="actions">
+										<li><input type="submit" value="Submit" class="primary"></li>
+										<li><input type="reset" v-on:click.prevent="resetForm" value="Reset"></li>
+										<li><a v-bind:href="'/invoice/'+ invoice.id + '/print'" class="button">Print</a></li>
+									</ul>
+								</div>
+							</div>
+						</form>
+					</div>
+	</section>
+{% endblock %}
+{% block custom_scripts %}
+<script>
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
+Vue.filter('toCurrency', function (value) {
+	if (typeof value !== "number") {
+		return value;
+	}
+	var formatter = new Intl.NumberFormat('en-US', {
+		style: 'currency',
+		currency: 'USD',
+		minimumFractionDigits: 0
+	});
+	return formatter.format(value);
+});
+var app = new Vue({
+	el: '#app',
+	data: {
+	  customer: {},
+	  invoice: {
+		  total: ''
+	  },
+	  customer: {},
+	  proof: '',
+	  item: {
+		price : '',
+		description: '',
+		quantity: '',
+		total: ''
+	  },
+	  items : [],
+	  fileUploadText : "Select File"
+
+	},
+	delimiters: ['${', '}'],
+	mounted: function () {
+		this.items = JSON.parse(this.$el.dataset.items);
+		this.customer = JSON.parse(this.$el.dataset.customer);
+		this.invoice =  JSON.parse(this.$el.dataset.invoice);
+		if(!this.invoice.paid){
+			this.invoice.paid = false
+		}
+		if(this.invoice.proof){
+			this.fileUploadText = "Replace File"
+		}
+	  },
+	computed: {
+		itemsTotal:{
+			cache: false,
+			get() {
+				return this.items.map(i => {
+					var item = {};
+					item = i;
+					item.total = parseFloat((i.price * i.quantity).toFixed(2));
+					return item
+				})
+			}
+		},
+		invoiceSubTotal:{
+			cache: false,
+			get(){
+				total = 0
+				this.items.forEach(function(i){
+					total += i.total;
+				});
+				return parseFloat((total).toFixed(2));
+			}
+		},
+		invoiceTax: {
+			cache: false,
+			get(){
+				total = 0
+				this.items.forEach(function(i){
+					total += i.total;
+				});
+				return parseFloat((total * this.invoice.tax).toFixed(2));
+			}
+		},
+		invoiceTotal:{
+			cache: false,
+			get(){
+				total = 0
+				this.items.forEach(function(i){
+					total += i.total;
+				});
+				return parseFloat((total + (total * this.invoice.tax)).toFixed(2));
+			}
+		},
+	},
+	methods: {
+		onFileChange(e) {
+			var files = e.target.files || e.dataTransfer.files;
+			if (!files.length)
+				return;
+			getBase64(files[0]).then(
+				function(data){
+					var ext = files[0].name.split('.').pop();
+					this.proof = data
+					this.proof += ','
+					this.proof += ext
+					this.fileUploadText = "Replace File"
+				}.bind(this)
+			);
+
+		},
+		addNewItem: function () {
+			this.items.push(Vue.util.extend({}, this.item))
+		},
+		removeItem: function (index) {
+			Vue.delete(this.items, index);
+		},
+		resetForm: function () {
+			this.invoice = {};
+			this.customer = {};
+			this.items = [{}];
+		},
+		submitForm: function() {
+			this.invoice.items = this.items;
+			this.invoice.customer = this.customer;
+			this.invoice.proof = this.proof
+			this.invoice.paid = Boolean(this.invoice.paid);
+			console.info('Vue.js items object:', JSON.stringify(this.invoice));
+			$.ajax({
+				type: "POST",
+				url: "",
+				data: JSON.stringify(this.invoice),
+				contentType: "application/json; charset=utf-8",
+				success: function(){window.location= '/invoices'},
+				error: function(errMsg) {
+					var msg = "";
+					for (var error in errMsg.responseJSON) {
+						// skip loop if the property is from prototype
+						if (!errMsg.responseJSON.hasOwnProperty(error)) continue;
+					
+						var errors = errMsg.responseJSON[error];
+						for (var e in errors) {
+							if(!errors.hasOwnProperty(e)) continue;
+							msg += errors[e] + "\n"
+						}
+					}
+					alert(msg)
+				}
+			});
+		}
+	}
+  })
+
+</script>
+{% endblock %}

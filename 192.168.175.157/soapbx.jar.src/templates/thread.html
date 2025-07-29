@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>SOAPBX</title>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="../../css/main.css" />
+</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header" th:replace="fragments/header :: header"></header>
+
+			<!-- Menu -->
+			<section id="menu" th:replace="fragments/menu :: menu"></section>
+
+			<!-- Main -->
+			<div id="main">
+				<article class="post">
+					<header>
+						<div class="title">
+							<h2 th:text="${story.title}"></h2>
+						</div>
+						<div class="meta">
+							<a th:href="@{|/profile/${story.ownerId}|}" class="author">
+							<span class="name" th:text="${story.ownerName}">Jane Doe</span>
+							<img th:src="@{|/user/${story.ownerId}/avatar|}" alt="" />
+							</a>
+							<time class="published" th:text="${story.friendlyDate}" >November 1, 2019</time>
+						</div>
+					</header>
+					<p th:utext="${story.formattedContent}">Lorem Ispum.</p>
+					<footer>
+						<form id="likeForm" method="post" th:action="@{|/like/${story.id}|}"></form>
+						<ul class="stats">
+							<li><div th:text="${story.categoryName}">General</div></li>
+							<li><a class="icon solid fa-heart" th:text="${story.likeCount}" onclick="document.getElementById('likeForm').submit();">0</a></li>
+							<li><div class="icon solid fa-comment" th:text="${story.commentCount}">0</div></li>
+							<li><a th:href="@{|/story/${story.id}/download|}" class="icon solid fa-download">Download Story</a><li>
+						</ul>
+					</footer>
+				</article>
+				<th:block th:each="comment : ${comments}">
+					<article class="post">
+						<header>
+							<div>
+								&nbsp;<span class="name" th:text="${comment.ownerName}">Jane Doe</span>&nbsp;|&nbsp;<time class="published" th:text="${comment.friendlyDate}" >November 1, 2015</time>
+							</div>
+						</header>
+						<p th:utext="${comment.content}">Lorem Ipsum</p>
+						<footer>
+						</footer>
+					</article>
+				</th:block>
+				<th:block th:if="${username != null}">
+					<article class="post">
+						<h3>Post a comment</h3>
+						<form th:action="@{|/story/${story.id}/comment|}" method="post">
+							<label for="comment">Comment:</label>
+							<input type="text" id="comment" name="comment" /><br/><br/>
+							<input type="submit" value="Submit" />
+						</form>
+					</article>
+				</th:block>
+			</div>
+
+			<!-- Sidebar -->
+			<section id="sidebar">
+
+				<!-- Intro -->
+				<section id="intro" th:replace="fragments/sidebar :: intro"></section>
+				
+				<!-- Posts List -->
+				<section th:replace="fragments/sidebar :: posts"></section>
+ 
+				<!-- About -->
+				<section class="blurb" th:replace="fragments/sidebar :: blurb"></section>
+
+				<!-- Footer -->
+				<section id="footer" th:replace="fragments/footer :: footer"></section>
+
+			</section>
+
+		</div>
+
+
+		<!-- Scripts -->
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../../js/browser.min.js"></script>
+		<script src="../../js/breakpoints.min.js"></script>
+		<script src="../../js/util.js"></script>
+		<script src="../../js/main.js"></script>
+	</body>
+</html>

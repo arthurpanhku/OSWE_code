@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>SOAPBX</title>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="../../css/main.css" />
+</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header" th:replace="fragments/header :: header"></header>
+
+			<!-- Menu -->
+			<section id="menu" th:replace="fragments/menu :: menu"></section>
+
+			<!-- Main -->
+			<div id="main">
+				<article class="post">
+					<header>
+						<div class="title">
+							<h2>Users</h2>
+						</div>
+					</header>
+					<table>
+						<tr>
+							<th>Id</th><th>Name</th><th>Email</th><th>Admin</th><th>Active</th><th>Actions</th>
+						</tr>
+						<tr th:each="user : ${users}" >
+							<td th:text="${user.id}"></td>
+							<td th:text="${user.username}"></td>
+							<td th:text="${user.email}"></td>
+							<td th:text="${user.admin}"></td>
+							<td th:text="${user.active}"></td>
+							<td>
+								<ul class="actions">
+								<th:block th:if="${user.active}">
+									<!-- @{|/like/${story.id}|}  -->
+									<!-- @{|banUser(${user.id})|} -->
+									<!--  @{|activateUser(${user.id})|} -->
+									<li><a href="#" th:onclick="banUser([[${user.id}]])" class="button small">Ban User</a></li>
+								</th:block>
+								<th:block th:if="${!user.active}">
+									<li><a href="#" th:onclick="activateUser([[${user.id}]])" class="button small">Activate User</a></li>
+								</th:block>
+								</ul>
+							
+							</td>
+						</tr>
+					</table>
+					<footer>
+						<form id="banUserForm" method="post" action="#" ></form>
+						<form id="activateUserForm" method="post" action="#" ></form>
+					</footer>
+				</article>
+				<article class="post">
+					<header>
+						<div class="title">
+							<h2>Add new User</h2>
+						</div>
+					</header>
+					<div th:if="${message != null}" th:text="${message}"></div>
+					<div>
+						<form action="/admin/users/create" method="post">
+							<br/>
+							<label for="name">Name:</label>
+							<input type="text" id="name" name="name" /><br/>
+							<label for="email">Email:</label>
+							<input type="text" id="email" name="email" /><br/>
+							<input type="submit" class="button large" value="Submit" />
+						</form>
+					</div>
+				</article>
+			</div>
+
+			
+
+		</div>
+
+		<!-- Footer -->
+		<section id="footer"  th:replace="fragments/footer :: footer"></section>
+
+		<!-- Scripts -->
+		<script>
+			function banUser(userId) {
+				if(confirm('Are you sure you want to ban this user?')){
+					document.getElementById('banUserForm').action = "/admin/user/"+userId+"/ban";
+					document.getElementById('banUserForm').submit();
+				}
+
+				
+			}
+			function activateUser(userId) {
+				if(confirm('Are you sure you want to activate this user?')){
+					document.getElementById('activateUserForm').action = "/admin/user/"+userId+"/activate";
+					document.getElementById('activateUserForm').submit();
+				}
+				
+			}
+		</script>
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../../js/browser.min.js"></script>
+		<script src="../../js/breakpoints.min.js"></script>
+		<script src="../../js/util.js"></script>
+		<script src="../../js/main.js"></script>
+	</body>
+</html>

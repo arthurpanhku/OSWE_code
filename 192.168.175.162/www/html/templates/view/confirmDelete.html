@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+{% block content %}
+<!-- Banner -->
+<section id="banner">
+		<div class="content">
+			<header>
+				<h1 >Are you Sure?</h1>
+				<p>Deleting a cusomter will delete all of their Invoices. Are you sure you want to do this?</p>
+			</header>			
+			<div class="table-wrapper">
+				<table class="alt">
+					<thead>
+						<tr>
+							<th>Invoice</th>
+							<th>Due Date</th>
+							<th>Customer</th>
+							<th>Total</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% for invoice in invoices %}
+						<tr>
+							<td>{{ invoice.id }}</td>
+							<td>{{ invoice.dueDate|date('m/d/Y') }}</td>
+							<td>{% for customer in customers %}
+									{% if invoice.customerId == customer.id %}
+										{{ customer.name }}
+									{% endif %}
+								{% endfor %} </td>
+							<td>${{ invoice.total|number_format(2, '.', ',') }}</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			<div class="col-12">
+					<ul class="actions">
+						<li><a href="/customer/{{customers[0].id}}/delete/confirm" class="button primary">Delete</a></li>
+						<li><a href="/customers" class="button">Cancel</a></li>
+					</ul>
+				</div>
+			<div class="row gtr-50 gtr-uniform" >
+				<div class="chart-container col-6">
+					<canvas id="pie-chart" width="400" height="400"></canvas>
+				</div>
+				<div class="chart-container col-6">
+						<canvas id="line-chart" width="400" height="400"></canvas>
+					</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}
+{% block custom_scripts %}
+<script>
+	var customer_data = {
+		labels: [{% for invoice in invoices %} '{{invoice.id}}', {% endfor %}],
+		datasets: [{
+		label: "Total",
+		data: [{% for invoice in invoices %} {{invoice.total}}, {% endfor %}]
+		}]
+	}
+	var invoice_data = {
+		labels: [{% for item in history %} '{{ item.date }}', {% endfor %}],
+		datasets: [{
+			label: 'total',
+			data: [{% for item in history %} '{{ item.total }}', {% endfor %}],
+			fill: false
+		  }]
+	  }
+</script>
+<script>
+new Chart(document.getElementById("pie-chart"), {
+	type: 'pie',
+	data: customer_data,
+	options: {
+		title: {
+			display: true,
+			text: 'Total Amount per Invoice'
+		},
+		plugins: {
+			colorschemes: {
+				scheme: 'brewer.PastelOne3'
+			}
+		}
+	}
+});
+new Chart(document.getElementById('line-chart').getContext('2d'), {
+  type: 'line',
+  data: invoice_data,
+  options: {
+    plugins: {
+      colorschemes: {
+        scheme: 'brewer.PastelOne3'
+      }
+    }
+  }
+});
+document.getElementById("file").onchange = function() {
+    document.getElementById("form").submit();
+}
+</script>
+{% endblock %}

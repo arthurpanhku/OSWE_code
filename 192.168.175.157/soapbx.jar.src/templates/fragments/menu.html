@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>SOAPBX</title>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="../../css/main.css" />
+</head>
+<body>
+	<section id="menu" th:fragment="menu">
+
+		<!-- Search -->
+		<section>
+			<form class="search" method="get" action="/search">
+				<input type="text" name="query" placeholder="Search" />
+			</form>
+		</section>
+
+		<!-- Links -->
+		<th:block th:if="${isAdmin == true}">
+			<section>
+				<ul class="links">
+					<li th:if="${isAdmin == true}">
+						<a href="/admin">
+							<h3>Admin</h3>
+							<p>Admin Homepage</p>
+						</a>
+					</li>
+					<li th:if="${isAdmin == true}">
+						<a href="/admin/users">
+							<h3>User Management</h3>
+							<p>Manage Users</p>
+						</a>
+					</li>
+					<li th:if="${isAdmin == true}">
+						<a href="/admin/categories">
+							<h3>Category Management</h3>
+							<p>Manage Categories</p>
+						</a>
+					</li>
+					<li th:if="${isAdmin == true}">
+						<a href="/admin/welcomeEmail">
+							<h3>Welcome Email</h3>
+							<p>Edit Welcome Email</p>
+						</a>
+					</li>
+				</ul>
+			</section>
+		</th:block>
+
+		<!-- Actions -->
+		<section>
+			<ul class="actions stacked">
+				<li th:if="${username != null}"><a href="/homepage" class="button large fit">Your Homepage</a></li>
+				<li th:if="${username != null}"><a href="/story" class="button large fit">Post a Story</a></li>
+				<li th:if="${username != null}"><a href="/user/uploadImage" class="button large fit">Upload Avatar</a>
+				<li th:if="${username != null}"><a href="/user/changePassword" class="button large fit">Change Password</a>
+				<li th:if="${username != null}"><a href="/logout" class="button large fit">Logout</a></li>
+				<li th:if="${username == null}"><a href="/login" class="button large fit">Log In</a></li>
+			</ul>
+		</section>
+
+	</section>
+</body>
+</html>

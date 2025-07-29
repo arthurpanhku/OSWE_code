@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>SOAPBX</title>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="../../css/main.css" />
+</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+				<header id="header" th:replace="fragments/header :: header"></header>
+
+				<!-- Menu -->
+				<section id="menu" th:replace="fragments/menu :: menu"></section>
+				
+				<!-- Main -->
+				<div id="main" >
+					<article class="post">
+						<header>
+							<div class="title">
+								<h2>Your Stories</h2>
+							</div>
+							
+						</header>
+						<h3 th:if="${message != null}" th:text="${message}"></h3>
+						<ul class="stats">
+							<li><div th:text="@{|Stories posted: ${storyCount}|}">0</div></li>
+							<li><div th:text="@{|Comments posted: ${commentCount}|}">0</div></li>
+						</ul>
+						<th:block th:each="story : ${stories}">
+							<div>
+								<a th:href="@{|/story/${story.id}|}"><h4 th:text="${story.title}"></h4></a> 
+								</div>
+								<footer>
+								<ul class="stats">
+									<th:block th:if="${story.active}">
+										<li><div th:text="${story.categoryName}">General</div></li>
+										<li><div class="icon solid fa-heart" th:text="${story.likeCount}">1</div></li>
+										<li><div class="icon solid fa-comment" th:text="${story.commentCount}">1</div></li>
+									</th:block>
+									<th:block th:unless="${story.active}">
+										<li><div>Draft</div></li>
+										<li><a th:href="@{|/story/${story.id}/edit|}" class="button">Edit</a></li>
+									</th:block>
+								</ul>
+							</footer>
+						</th:block>
+						
+						
+						<footer>
+							
+							<ul class="actions">
+								<li><a href="/story" class="button">Why not write your next great story?</a></li>
+							</ul>
+								
+						</footer>
+						
+					</article>
+					<!-- Footer -->
+					<section id="footer" th:replace="fragments/footer :: footer"></section>
+				</div>
+
+			</div>
+
+		<!-- Scripts -->
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../../js/browser.min.js"></script>
+		<script src="../../js/breakpoints.min.js"></script>
+		<script src="../../js/util.js"></script>
+		<script src="../../js/main.js"></script>
+	</body>
+</html>

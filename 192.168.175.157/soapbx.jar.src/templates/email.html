@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>SOAPBX</title>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="../../css/main.css" />
+</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header" th:replace="fragments/header :: header"></header>
+
+			<!-- Menu -->
+			<section id="menu" th:replace="fragments/menu :: menu"></section>
+
+			<!-- Main -->
+			<div id="main">
+
+				<article class="post">
+					<header>
+						<div class="title">
+							<h2>Welcome Email</h2>
+						</div>
+					</header>
+					<div th:if="${message != null}" th:text="${message}"></div>
+					<p class="text-secondary">Valid placeholders are 'username' and 'password'</p>
+					<form action="/admin/welcomeEmail/edit" method="post">
+						<label for="content">Email content:</label>
+						<textarea id="content" name="content" rows="10" cols="100" th:text="${content}">Template Content</textarea><br/>
+						<input type="submit" value="Submit" />
+					</form>	
+					
+				</article>
+
+			</div>
+
+		</div>
+
+		<!-- Scripts -->
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../../js/browser.min.js"></script>
+		<script src="../../js/breakpoints.min.js"></script>
+		<script src="../../js/util.js"></script>
+		<script src="../../js/main.js"></script>
+	</body>
+</html>
